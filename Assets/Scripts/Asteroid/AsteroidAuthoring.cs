@@ -13,7 +13,6 @@ public class AsteroidAuthoring : MonoBehaviour
         {
             Entity entity = GetEntity(TransformUsageFlags.Dynamic);
             AddComponent(entity, new AsteroidMoveSpeed { Value = authoring.AsteroidSpeed });
-
         }
     }
 }

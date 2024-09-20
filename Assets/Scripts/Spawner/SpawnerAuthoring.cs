@@ -10,6 +10,7 @@ public class SpawnerAuthoring : MonoBehaviour
     public float SpawnRate;
     public int AmountToSpawnATime;
     public List<Prefab> Asteroids;
+    public float AsteroidLifeTime;
 
     class SpawnerBaker : Baker<SpawnerAuthoring>
     {
@@ -20,12 +21,23 @@ public class SpawnerAuthoring : MonoBehaviour
             AddComponent(entity, new Spawner
             {
                 Prefab = GetEntity(authoring.Prefab, TransformUsageFlags.Dynamic),
-                SpawnPosition = new float2(0,3),
+                SpawnPosition = new float2(0,7),
                 SpawnAmount = authoring.AmountToSpawnATime,
                 NextSpawnTime = 0,
                 SpawnRate = authoring.SpawnRate,
                 Random = new Unity.Mathematics.Random(1)
             });
+
+            AddComponent(entity, new AsteroidLifeTime
+            {
+                Value = authoring.AsteroidLifeTime
+            });
         }
     }
 }
+
+public struct AsteroidLifeTime : IComponentData
+{
+    public float Value;
+}
+

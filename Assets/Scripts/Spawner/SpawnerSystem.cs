@@ -29,30 +29,40 @@ public partial struct SpawnerSystem : ISystem
         {
             if (TimeSinceLastWave > WaveDuration)
             {
-                ShouldSpawn = false;
+                ShouldSpawn = false;               
             }
         }
         else
         {
             if (TimeSinceLastWave > (WaveDuration + WavePause))
             {
+                Debug.Log("Beep");
+
                 ShouldSpawn = true;
+
+                LastWave = SystemAPI.Time.ElapsedTime;
             }
         }
 
-        foreach (RefRW<Spawner> spawner in SystemAPI.Query<RefRW<Spawner>>())
+        var ecb = new EntityCommandBuffer(Unity.Collections.Allocator.Temp);
+
+        foreach (var (spawner, lifetime) in SystemAPI.Query<RefRW<Spawner>,AsteroidLifeTime>())
         {
             if (spawner.ValueRO.NextSpawnTime < SystemAPI.Time.ElapsedTime)
             {
                 if (ShouldSpawn == true)
                 {
                     Entity newEntity = state.EntityManager.Instantiate(spawner.ValueRO.Prefab);
-                    float3 pos = new float3(spawner.ValueRW.Random.NextFloat(-5, 5), spawner.ValueRO.SpawnPosition.y, 0);
+                    float3 pos = new float3(spawner.ValueRW.Random.NextFloat(-6, 6), spawner.ValueRO.SpawnPosition.y, 0);
                     state.EntityManager.SetComponentData(newEntity, LocalTransform.FromPosition(pos));
+                    ecb.AddComponent(newEntity, new LifeTime { Value = lifetime.Value });
                 }
 
                 spawner.ValueRW.NextSpawnTime = (float)SystemAPI.Time.ElapsedTime + spawner.ValueRO.SpawnRate;
             }
         }
+        state.Dependency.Complete();
+        ecb.Playback(state.EntityManager);
+        ecb.Dispose();
     }
 }

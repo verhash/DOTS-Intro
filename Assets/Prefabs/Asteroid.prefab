@@ -161,4 +161,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a905e5fa57895a846a87f0f48eb610ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AsteroidSpeed: 2
+  AsteroidSpeed: 4
