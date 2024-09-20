@@ -20,10 +20,11 @@ public class SpawnerAuthoring : MonoBehaviour
             AddComponent(entity, new Spawner
             {
                 Prefab = GetEntity(authoring.Prefab, TransformUsageFlags.Dynamic),
-                SpawnPosition = float2.zero,
+                SpawnPosition = new float2(0,3),
                 SpawnAmount = authoring.AmountToSpawnATime,
                 NextSpawnTime = 0,
                 SpawnRate = authoring.SpawnRate,
+                Random = new Unity.Mathematics.Random(1)
             });
         }
     }
